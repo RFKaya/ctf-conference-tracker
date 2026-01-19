@@ -169,7 +169,7 @@ app.post('/api/subscribe', (req, res) => {
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log("------------------------------------------");
-  console.log(`🛡️  Cyber Tracker: http://localhost:${PORT}`);
+  console.log(`🛡️  ctf-conference-tracker: http://localhost:${PORT}`);
   console.log("------------------------------------------");
 
   // Sunucu ayağa kalkınca takip sistemini de başlat

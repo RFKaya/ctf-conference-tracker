@@ -1,6 +1,6 @@
-# 🛡️ Cyber Tracker - Siber Güvenlik Etkinlik Takipçisi
+# 🛡️ ctf-conference-tracker - Siber Etkinlik Takipçisi
 
-Cyber Tracker, dünya genelindeki **CTF (Capture The Flag)** yarışmalarını ve **Siber Güvenlik Konferanslarını** tek bir merkezden takip etmenizi sağlayan, Discord entegrasyonlu bir otomasyon aracıdır.
+ctf-conference-tracker, dünya genelindeki **CTF (Capture The Flag)** yarışmalarını ve **Siber Güvenlik Konferanslarını** tek bir merkezden takip etmenizi sağlayan, Discord entegrasyonlu bir otomasyon aracıdır.
 
 ## 🌟 Özellikler
 
@@ -42,7 +42,7 @@ Projeyi kendi bilgisayarınızda çalıştırmak için adımları izleyin.
 ### 1. Projeyi Klonlayın
 
     git clone https://github.com/RFKaya/ctf-conference-tracker
-    cd cyber-tracker
+    cd ctf-conference-tracker/src
 
 ### 2. Bağımlılıkları Yükleyin
 
@@ -60,18 +60,20 @@ Tarayıcınızda `http://localhost:3000` adresine gidin.
 Proje varsayılan olarak `database/webhooks.json` dosyasındaki adreslere bildirim gönderir. Arayüz üzerindeki "Gelişmeleri Takip Et" butonu ile yeni webhook ekleyebilirsiniz.
 
 ### Veri Güncelleme Sıklığı
-Varsayılan olarak sistem **30 dakikada bir** yeni etkinlik kontrolü yapar. Bunu `client.js` içerisindeki `CHECK_INTERVAL` değeri ile değiştirebilirsiniz.
+Varsayılan olarak sistem **1 dakikada bir** yeni etkinlik kontrolü yapar. Bunu `client.js` içerisindeki `CHECK_INTERVAL` değeri ile değiştirebilirsiniz.
 
 ## 📂 Dosya Yapısı
 
-    /cyber-tracker
-    ├── client.js              # Ana sunucu dosyası
-    ├── services/              # Scraper ve Bildirim servisleri
-    ├── views/                 # EJS Arayüz dosyaları
-    ├── database/              # JSON veritabanı (Events & Webhooks)
-    ├── public/                # Statik dosyalar (CSS, JS, Img)
-    ├── specs/                 # API ve DB dökümanları
-    └── docs/                  # Mimari ve kurulum rehberi
+    /ctf-conference-tracker
+    ├── docs/                   # Proje dökümantasyonu ve rehberler
+    ├── images/                 # Ekran görüntüleri ve statik görseller
+    ├── researchs/              # Derin araştırma çıktıları
+    ├── specs/                  # Teknik spesifikasyonlar ve API tanımları
+    └── src/                    # Uygulama kaynak kodları
+        ├── database/           # JSON veritabanı dosyaları (events, webhooks)
+        ├── services/           # Servis katmanı (Scrapers, Notification, Logger)
+        ├── views/              # EJS şablonları (index.ejs, partials)
+        └── client.js           # Uygulamanın ana giriş noktası ve sunucu
 
 ## 🤝 Katkıda Bulunma
 

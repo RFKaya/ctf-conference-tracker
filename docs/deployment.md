@@ -24,11 +24,11 @@ Uygulamanın terminal kapansa bile çalışmaya devam etmesi için **PM2** kulla
 
 2. Uygulamayı Başlat:
 
-    pm2 start client.js --name "cyber-tracker"
+    pm2 start client.js --name "ctf-conference-tracker"
 
 3. Logları İzle:
 
-    pm2 logs cyber-tracker
+    pm2 logs ctf-conference-tracker
 
 4. Sunucu yeniden başlarsa otomatik açılması için:
 
