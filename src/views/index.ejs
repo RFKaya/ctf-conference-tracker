@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Siber Güvenlik Takvimi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* --- GENEL AYARLAR --- */
+    :root {
+      --bg-dark: #020617;
+      --card-dark: #0f172a;
+      --border-color: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #3b82f6;
+
+      /* CTF Özel Renkleri */
+      --ctf-bg: #1a0505;
+      --ctf-border: #450a0a;
+      --ctf-hover: #7f1d1d;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Form Elemanları */
+    .form-control,
+    .form-select {
+      background-color: var(--card-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      background-color: #1e293b;
+      color: white;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+    }
+
+    /* Switch Butonu Özelleştirme */
+    .form-switch .form-check-input {
+      background-color: var(--card-dark);
+      border-color: var(--border-color);
+      width: 3em;
+      height: 1.5em;
+      cursor: pointer;
+    }
+
+    .form-switch .form-check-input:checked {
+      background-color: var(--accent-blue);
+      border-color: var(--accent-blue);
+    }
+
+    .form-switch .form-check-label {
+      cursor: pointer;
+      padding-top: 2px;
+      font-weight: 500;
+    }
+
+    /* --- KART TASARIMI --- */
+    .event-card {
+      background-color: var(--card-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-blue);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* --- CTF TEMASI --- */
+    .card-ctf-theme {
+      background: linear-gradient(160deg, var(--ctf-bg) 0%, var(--card-dark) 100%);
+      border-color: var(--ctf-border);
+    }
+
+    .card-ctf-theme:hover {
+      border-color: #ef4444;
+      box-shadow: 0 10px 30px -10px rgba(220, 38, 38, 0.3);
+    }
+
+    .card-ctf-theme:hover .card-title {
+      color: #fca5a5;
+    }
+
+    /* --- PARLAK TARİH --- */
+    .date-highlight {
+      color: #e2e8f0;
+      font-weight: 600;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+      letter-spacing: 0.5px;
+    }
+
+    /* Butonlar & Rozetler */
+    .filter-btn {
+      background-color: var(--card-dark);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background-color: var(--accent-blue);
+      color: white;
+      border-color: var(--accent-blue);
+    }
+
+    .badge-CTF {
+      background-color: rgba(220, 38, 38, 0.2);
+      color: #f87171;
+      border: 1px solid #7f1d1d;
+    }
+
+    .badge-CONFERENCE {
+      background-color: rgba(37, 99, 235, 0.2);
+      color: #60a5fa;
+      border: 1px solid #1e3a8a;
+    }
+
+    .badge-Physical {
+      background-color: rgba(5, 150, 105, 0.2);
+      color: #34d399;
+      border: 1px solid #064e3b;
+    }
+
+    .badge-Online {
+      background-color: rgba(71, 85, 105, 0.3);
+      color: #cbd5e1;
+      border: 1px solid #334155;
+    }
+
+    .badge-default {
+      background-color: rgba(71, 85, 105, 0.2);
+      color: #94a3b8;
+    }
+
+    /* Modal */
+    .modal-content {
+      background-color: #0f172a;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-footer {
+      border-top: 1px solid var(--border-color);
+    }
+
+    .btn-close {
+      filter: invert(1) grayscale(100%) brightness(200%);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container py-5">
+
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bold mb-3">
+        <i class="fas fa-terminal text-primary me-2"></i>Siber Etkinlikler
+      </h1>
+
+      <div class="row justify-content-center mb-3 g-2">
+        <div class="col-md-5">
+          <input type="text" id="searchInput" class="form-control" placeholder="Etkinlik ara...">
+        </div>
+        <div class="col-md-3">
+          <select id="sortSelect" class="form-select">
+            <option value="date_asc">📅 Tarihe Göre (Yakın > Uzak)</option>
+            <option value="date_desc">📅 Tarihe Göre (Uzak > Yakın)</option>
+            <option value="title_asc">🔤 İsim (A-Z)</option>
+          </select>
+        </div>
+        <div class="text-center mb-4">
+          <button class="btn btn-outline-primary rounded-pill px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#subscribeModal">
+            <i class="fab fa-discord me-2"></i>Gelişmeleri Takip Et
+          </button>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-center mb-4">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="futureOnlyToggle">
+          <label class="form-check-label text-muted ms-2" for="futureOnlyToggle">Geçmişi Gizle (Sadece Güncel)</label>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-center flex-wrap gap-2">
+        <% types.forEach(type=> { %>
+          <button class="btn rounded-pill px-4 filter-btn <%= type === 'ALL' ? 'active' : '' %>" data-filter="<%= type %>">
+            <%= type==='ALL' ? 'TÜMÜNÜ GÖR' : type %>
+          </button>
+          <% }) %>
+      </div>
+    </div>
+
+    <div class="row g-4" id="events-container">
+      <% events.forEach(event=> {
+
+        let badgeClass = 'badge-default';
+        if(event.type === 'CTF') badgeClass = 'badge-CTF';
+        else if(event.type === 'CONFERENCE') badgeClass = 'badge-CONFERENCE';
+        else if(event.type === 'Physical') badgeClass = 'badge-Physical';
+        else if(event.type === 'Online') badgeClass = 'badge-Online';
+
+        let cardThemeClass = (event.type === 'CTF') ? 'card-ctf-theme' : '';
+
+        let timestamp = 0;
+        let displayDate = event.date || "Tarih Yok";
+        try {
+        if (!isNaN(event.date)) {
+        timestamp = Number(event.date);
+        displayDate = new Date(timestamp).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+        } else {
+        let cleanDate = event.date.replace(/(\d+)(st|nd|rd|th)/, '$1');
+        let dateObj = new Date(cleanDate);
+        if (!isNaN(dateObj.getTime())) {
+        timestamp = dateObj.getTime();
+        } else { timestamp = 9999999999999; }
+        }
+        } catch (e) {}
+
+        let safeTitle = event.title ? event.title.toLowerCase() : "";
+        let safeDesc = event.description || "Açıklama bulunmuyor.";
+        %>
+
+        <div class="col-md-6 col-lg-4 event-item" data-type="<%= event.type %>" data-title="<%= safeTitle %>" data-timestamp="<%= timestamp %>">
+
+          <div class="card h-100 event-card <%= cardThemeClass %>" data-title="<%= event.title %>" data-date="<%= displayDate %>" data-type="<%= event.type %>" data-desc="<%= safeDesc %>" data-url="<%= event.url %>" onclick="openModal(this)">
+
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge rounded-pill <%= badgeClass %>">
+                  <%= event.type %>
+                </span>
+                <small class="date-highlight">
+                  <i class="far fa-calendar me-1"></i>
+                  <%= displayDate %>
+                </small>
+              </div>
+
+              <h5 class="card-title fw-bold mb-3 text-light">
+                <%= event.title %>
+              </h5>
+
+              <p class="card-text small text-secondary flex-grow-1">
+                <%= event.description && event.description.length> 100 ? event.description.substring(0, 100) + '...' : event.description %>
+              </p>
+
+              <div class="mt-3 text-end">
+                <small class="text-primary fw-bold">Detaylar <i class="fas fa-chevron-right ms-1"></i></small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <% }) %>
+    </div>
+  </div>
+
+  <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold text-white" id="modalTitle">Etkinlik Başlığı</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex gap-2 mb-3">
+            <span class="badge badge-default" id="modalType">TYPE</span>
+            <span class="text-white fw-bold"><i class="far fa-calendar me-1"></i> <span id="modalDate">Tarih</span></span>
+          </div>
+          <p class="text-secondary" id="modalDesc">Açıklama metni buraya gelecek...</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+          <a href="#" id="modalLink" target="_blank" class="btn btn-primary px-4 fw-bold">
+            Etkinliğe Git <i class="fas fa-external-link-alt ms-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // WEBHOOK KAYIT İŞLEMİ
+    async function submitWebhook() {
+      const input = document.getElementById('webhookInput');
+      const errorDiv = document.getElementById('subError');
+      const url = input.value.trim();
+
+      // Basit client-side kontrol
+      if (!url) {
+        errorDiv.innerText = "Lütfen bir link girin.";
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        // Backend'e istek at
+        const response = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ webhookUrl: url })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // 1. Abonelik modalını kapat
+          const subModalEl = document.getElementById('subscribeModal');
+          const subModal = bootstrap.Modal.getInstance(subModalEl);
+          subModal.hide();
+
+          // 2. Başarı modalını aç
+          const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+          successModal.show();
+
+          // Inputu temizle
+          input.value = '';
+          errorDiv.style.display = 'none';
+        } else {
+          // Hata mesajını göster
+          errorDiv.innerText = result.message || "Bir hata oluştu.";
+          errorDiv.style.display = 'block';
+        }
+
+      } catch (err) {
+        console.error(err);
+        errorDiv.innerText = "Sunucuya bağlanılamadı.";
+        errorDiv.style.display = 'block';
+      }
+    }
+    let eventModal;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
+      initFilters();
+    });
+
+    // MODAL AÇMA
+    function openModal(el) {
+      const title = el.getAttribute('data-title');
+      const date = el.getAttribute('data-date');
+      const type = el.getAttribute('data-type');
+      const desc = el.getAttribute('data-desc');
+      const url = el.getAttribute('data-url');
+
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalDate').innerText = date;
+      document.getElementById('modalDesc').innerText = desc;
+      document.getElementById('modalLink').href = url;
+
+      const badge = document.getElementById('modalType');
+      badge.innerText = type;
+
+      badge.className = 'badge rounded-pill me-2';
+      if (type === 'CTF') badge.classList.add('badge-CTF');
+      else if (type === 'CONFERENCE') badge.classList.add('badge-CONFERENCE');
+      else badge.classList.add('badge-default');
+
+      eventModal.show();
+    }
+
+    // FİLTRELEME SİSTEMİ
+    function initFilters() {
+      const searchInput = document.getElementById('searchInput');
+      const sortSelect = document.getElementById('sortSelect');
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      const futureToggle = document.getElementById('futureOnlyToggle'); // Yeni Toggle
+      const eventsContainer = document.getElementById('events-container');
+      let currentFilter = 'ALL';
+
+      function applyFilters() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const isFutureOnly = futureToggle.checked; // Switch açık mı?
+        const now = Date.now(); // Şimdiki zaman
+        const items = document.querySelectorAll('.event-item');
+
+        items.forEach(item => {
+          const itemType = item.getAttribute('data-type');
+          const itemTitle = item.getAttribute('data-title');
+          const itemTimestamp = Number(item.getAttribute('data-timestamp'));
+
+          // 1. Kategori Kontrolü
+          const matchesType = (currentFilter === 'ALL' || itemType === currentFilter);
+
+          // 2. Arama Kontrolü
+          const matchesSearch = itemTitle.includes(searchTerm);
+
+          // 3. Tarih Kontrolü (YENİ)
+          // Eğer switch kapalıysa (false) her zaman true döndür.
+          // Eğer switch açıksa, timestamp şimdiden büyük mü kontrol et.
+          // (Timestamp çok büyükse geçerli sayıyoruz çünkü tarih belirsiz olabilir)
+          let matchesDate = true;
+          if (isFutureOnly) {
+            matchesDate = (itemTimestamp >= now);
+          }
+
+          // Hepsi uyuyorsa göster
+          if (matchesType && matchesSearch && matchesDate) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      }
+
+      function sortEvents() {
+        const sortType = sortSelect.value;
+        const items = Array.from(document.querySelectorAll('.event-item'));
+
+        items.sort((a, b) => {
+          const titleA = a.getAttribute('data-title');
+          const titleB = b.getAttribute('data-title');
+          const dateA = Number(a.getAttribute('data-timestamp'));
+          const dateB = Number(b.getAttribute('data-timestamp'));
+
+          if (sortType === 'title_asc') return titleA.localeCompare(titleB);
+          if (sortType === 'date_asc') return dateA - dateB;
+          if (sortType === 'date_desc') return dateB - dateA;
+        });
+        items.forEach(item => eventsContainer.appendChild(item));
+      }
+
+      // Event Listeners
+      searchInput.addEventListener('input', applyFilters);
+      sortSelect.addEventListener('change', sortEvents);
+      futureToggle.addEventListener('change', applyFilters); // Switch değişince filtrele
+
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.getAttribute('data-filter');
+          applyFilters();
+        });
+      });
+
+      sortEvents();
+    }
+  </script>
+  <div class="modal fade" id="subscribeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+          <h5 class="modal-title fw-bold text-white">Discord ile Takip Et</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-secondary small mb-3">
+            Yeni etkinlikler eklendiğinde Discord kanalına otomatik bildirim almak için Webhook URL'ni yapıştır.
+          </p>
+          <div class="mb-3">
+            <label for="webhookInput" class="form-label text-muted small">Webhook URL</label>
+            <input type="url" class="form-control" id="webhookInput" placeholder="https://discord.com/api/webhooks/...">
+          </div>
+          <div id="subError" class="text-danger small mb-2" style="display:none;"></div>
+        </div>
+        <div class="modal-footer border-top-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+          <button type="button" class="btn btn-primary" onclick="submitWebhook()">Abone Ol</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center py-4">
+        <div class="modal-body">
+          <div class="mb-3">
+            <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+          </div>
+          <h3 class="fw-bold text-white mb-2">Tebrikler!</h3>
+          <p class="text-secondary">
+            Artık siber güvenlik etkinliklerini Discord üzerinden anlık takip edeceksin.
+          </p>
+          <button type="button" class="btn btn-success px-5 mt-3 rounded-pill" data-bs-dismiss="modal">Harika</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+{
+  "projectName": "ctf-conference-tracker",
+  "category": "Cyber Security / Web Automation",
+  "author": "RFKaya",
+  "version": "1.0.0",
+  "description": "Automated tracking system for CTF competitions and InfoSec conferences with Discord integration.",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node client.js"
+  },
+  "features": [
+    "Real-time data scraping from multiple sources",
+    "Discord Webhook integration for instant notifications",
+    "Web interface with advanced filtering and search",
+    "Background monitoring service"
+  ],
+  "requirements": {
+    "os": "Cross-platform (Windows, Linux, macOS)",
+    "language": "Node.js (JavaScript)"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "cheerio": "^1.1.2",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1"
+  }
+}
